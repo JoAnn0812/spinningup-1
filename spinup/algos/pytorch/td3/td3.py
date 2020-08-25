@@ -434,8 +434,12 @@ def td3(env_fn: Callable,
             a = get_action(o, act_noise_fn(t))
             unscaled_action = unscale_action(env.action_space, a)
         else:
-            unscaled_action = env.action_space.sample()
-            a = scale_action(env.action_space, unscaled_action)
+            if t < (start_steps/2):
+                unscaled_action = env.action_space.sample()
+                a = scale_action(env.action_space, unscaled_action)
+            else:
+                unscaled_action = np.zeros((12,))
+                a = scale_action(env.action_space, unscaled_action)
         # Step the env
         o2, r, d, _ = env.step(unscaled_action)
         ep_ret += r
